@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ks om ia3x</title>
+    <link rel="stylesheet" href="index.css" />
+    <script>
+      window.addEventListener("message", function (e) {
+        if (typeof e.data !== "string") return;
+        try {
+          var data = JSON.parse(e.data);
+        } catch (err) {
+          return;
+        }
+        if (!data || typeof data !== "object") return;
+        e.stopImmediatePropagation();
+        window.dispatchEvent(new MessageEvent("message", { data: data }));
+      }, true);
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      window.__pendingDuiMessages = window.__pendingDuiMessages || [];
+      window.__loadingUiMounted = false;
+      window.addEventListener("message", function (event) {
+        if (window.__loadingUiMounted) return;
+        var data = event && event.data;
+        if (typeof data === "string") {
+          try { data = JSON.parse(data); } catch (err) { return; }
+        }
+        if (!data || !data.action) return;
+        var loadingActions = {
+          showLoading: 1,
+          updateLoading: 1,
+          showReady: 1,
+          updateReadyCursor: 1,
+          hideLoading: 1,
+          showError: 1,
+          openKeySelection: 1,
+          updateKeySelection: 1,
+          closeKeySelection: 1,
+        };
+        if (loadingActions[data.action]) {
+          window.__pendingDuiMessages.push(data);
+        }
+      });
+    </script>
+    <script src="index.js"></script>
+  </body>
+</html>
